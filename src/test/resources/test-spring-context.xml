@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <bean id="shopLocator" class="manager.retail.service.shop.ShopLocatorImpl">
+        <property name="shopInMemoryArray" ref="shopInMemoryArray" />
+    </bean>
+    <bean id="shopInMemoryArray" class="manager.retail.datastore.ShopInMemoryArray" />
+</beans>
+
