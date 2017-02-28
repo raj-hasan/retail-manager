@@ -4,7 +4,7 @@
 <beans>
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
     <bean id="shopLocator" class="manager.retail.service.shop.ShopLocatorImpl">
-        <property name="shopInMemoryArray" ref="shopInMemoryArray" />
+        <property name="inMemoryArray" ref="shopInMemoryArray" />
     </bean>
     <bean id="shopInMemoryArray" class="manager.retail.datastore.ShopInMemoryArray" />
 </beans>

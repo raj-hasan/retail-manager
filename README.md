@@ -56,6 +56,7 @@ You will see the following message after a successful start up -
 
 Retail Manager is running!
 
+
 ## Test
 
 The application has test cases as well. To run, use the below -

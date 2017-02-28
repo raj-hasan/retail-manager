@@ -27,7 +27,7 @@ public class RetailManagerControllerTest extends BaseTest {
 
     @Test
     public void checkStatus() throws Exception {
-        this.mockMvc.perform(get("/").header("Accept-Language", Locale.getDefault())).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/shop/").header("Accept-Language", Locale.getDefault())).andDo(print()).andExpect(status().isOk())
                 .andExpect(result -> {result.toString().equals(RetailMessages.SUCCESS);});
     }
 }

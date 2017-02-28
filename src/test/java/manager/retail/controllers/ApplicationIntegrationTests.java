@@ -31,7 +31,7 @@ public class ApplicationIntegrationTests extends BaseTest {
 
     @Test
     public void testApplicationStatus() {
-        given().when().get("/shop").then().statusCode(200);
+        given().when().get("/shop/").then().statusCode(200);
     }
 
     @Test

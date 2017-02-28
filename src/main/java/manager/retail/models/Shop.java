@@ -59,17 +59,17 @@ public class Shop {
         Shop shop = (Shop) o;
 
         if (!shopName.equals(shop.shopName)) return false;
-        if (!shopAddress.equals(shop.shopAddress)) return false;
-        if (!shopLatitude.equals(shop.shopLatitude)) return false;
-        return shopLongitude.equals(shop.shopLongitude);
+        if (shopAddress != null && !shopAddress.equals(shop.shopAddress)) return false;
+        if (shopLatitude != shop.shopLatitude) return false;
+        return shopLongitude == shop.shopLongitude;
     }
 
     @Override
     public int hashCode() {
         int result = shopName.hashCode();
-        //result = 31 * result + shopAddress.hashCode();
-        result = 31 * result + shopLatitude.hashCode();
-        result = 31 * result + shopLongitude.hashCode();
+        result = 31 * result + (shopAddress != null ? shopAddress.hashCode() : 0);
+        result = 31 * result + (shopLatitude != null ? shopLatitude.hashCode() : 0);
+        result = 31 * result + (shopLongitude != null ? shopLongitude.hashCode() : 0);
         return result;
     }
 
@@ -119,13 +119,13 @@ public class Shop {
 
             ShopAddress that = (ShopAddress) o;
 
-            if (postCode != that.postCode) return false;
-            return number.equals(that.number);
+            if (number != null && !number.equals(that.number)) return false;
+            return postCode == that.postCode;
         }
 
         @Override
         public int hashCode() {
-            int result = number.hashCode();
+            int result = number != null ? number.hashCode() : 0;
             result = 31 * result + postCode;
             return result;
         }
