@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Shop.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">retail-manager</a> &gt; <a href="index.source.html" class="el_package">manager.retail.models</a> &gt; <span class="el_source">Shop.java</span></div><h1>Shop.java</h1><pre class="source lang-java linenums">package manager.retail.models;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+/*
+* @CreatedBy Hasan on 22-Feb-2017
+* Model class for Shop data. Shop class has below attributes -
+* shopName
+* shopAddress.number
+* shopAddress.postCode
+* shopLongitude
+* shopLatitude
+*/
+
+<span class="fc" id="L15">public class Shop {</span>
+    private String shopName;
+    @NotNull
+    private ShopAddress shopAddress;
+    private Double shopLatitude;
+    private Double shopLongitude;
+
+    public String getShopName() {
+<span class="fc" id="L23">        return shopName;</span>
+    }
+
+    public void setShopName(String shopName) {
+<span class="fc" id="L27">        this.shopName = shopName;</span>
+<span class="fc" id="L28">    }</span>
+
+    public ShopAddress getShopAddress() {
+<span class="fc" id="L31">        return shopAddress;</span>
+    }
+
+    public void setShopAddress(ShopAddress shopAddress) {
+<span class="fc" id="L35">        this.shopAddress = shopAddress;</span>
+<span class="fc" id="L36">    }</span>
+
+    public Double getShopLatitude() {
+<span class="fc" id="L39">        return shopLatitude;</span>
+    }
+
+    public void setShopLatitude(Double shopLatitude) {
+<span class="fc" id="L43">        this.shopLatitude = shopLatitude;</span>
+<span class="fc" id="L44">    }</span>
+
+    public Double getShopLongitude() {
+<span class="fc" id="L47">        return shopLongitude;</span>
+    }
+
+    public void setShopLongitude(Double shopLongitude) {
+<span class="fc" id="L51">        this.shopLongitude = shopLongitude;</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L57" title="2 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+
+<span class="fc" id="L59">        Shop shop = (Shop) o;</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (!shopName.equals(shop.shopName)) return false;</span>
+<span class="pc bpc" id="L62" title="2 of 4 branches missed.">        if (shopAddress != null &amp;&amp; !shopAddress.getNumber().equals(shop.shopAddress.getNumber()) &amp;&amp;</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                this.shopAddress.getPostCode()!=shop.shopAddress.getPostCode()) return false;</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (shopLatitude.doubleValue() != shop.shopLatitude.doubleValue()) return false;</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        return shopLongitude.doubleValue() == shop.shopLongitude.doubleValue();</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L70">        int result = shopName.hashCode();</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        result = 31 * result + (shopAddress != null ? shopAddress.hashCode() : 0);</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        result = 31 * result + (shopLatitude != null ? shopLatitude.hashCode() : 0);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        result = 31 * result + (shopLongitude != null ? shopLongitude.hashCode() : 0);</span>
+<span class="fc" id="L74">        return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L79">        return &quot;Shop{&quot; +</span>
+                &quot;shopName='&quot; + shopName + '\'' +
+                &quot;, shopAddress=&quot; + shopAddress +
+                &quot;, shopLatitude=&quot; + shopLatitude +
+                &quot;, shopLongitude=&quot; + shopLongitude +
+                '}';
+    }
+
+<span class="fc" id="L87">    public static class ShopAddress {</span>
+        @NotNull
+        private String number;
+        @Min(1)
+        private int postCode;
+
+<span class="fc" id="L93">        public ShopAddress(){</span>
+            //default no-argument constructor
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        public ShopAddress(String number, int postCode) {</span>
+<span class="fc" id="L97">            this.number = number;</span>
+<span class="fc" id="L98">            this.postCode = postCode;</span>
+<span class="fc" id="L99">        }</span>
+        public String getNumber() {
+<span class="fc" id="L101">            return number;</span>
+        }
+
+        public void setNumber(String number) {
+<span class="fc" id="L105">            this.number = number;</span>
+<span class="fc" id="L106">        }</span>
+
+        public int getPostCode() {
+<span class="fc" id="L109">            return postCode;</span>
+        }
+
+        public void setPostCode(int postCode) {
+<span class="fc" id="L113">            this.postCode = postCode;</span>
+<span class="fc" id="L114">        }</span>
+
+        @Override
+        public boolean equals(Object o) {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (this == o) return true;</span>
+<span class="nc bnc" id="L119" title="All 4 branches missed.">            if (o == null || getClass() != o.getClass()) return false;</span>
+
+<span class="nc" id="L121">            ShopAddress that = (ShopAddress) o;</span>
+
+<span class="nc bnc" id="L123" title="All 4 branches missed.">            if (number != null &amp;&amp; !number.equals(that.number)) return false;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">            return postCode == that.postCode;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            int result = number != null ? number.hashCode() : 0;</span>
+<span class="fc" id="L130">            result = 31 * result + postCode;</span>
+<span class="fc" id="L131">            return result;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L136">            return &quot;ShopAddress{&quot; +</span>
+                    &quot;number='&quot; + number + '\'' +
+                    &quot;, postCode=&quot; + postCode +
+                    '}';
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

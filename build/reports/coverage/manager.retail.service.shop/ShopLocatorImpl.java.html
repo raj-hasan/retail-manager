@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShopLocatorImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">retail-manager</a> &gt; <a href="index.source.html" class="el_package">manager.retail.service.shop</a> &gt; <span class="el_source">ShopLocatorImpl.java</span></div><h1>ShopLocatorImpl.java</h1><pre class="source lang-java linenums">package manager.retail.service.shop;
+
+import manager.retail.datastore.ShopInMemoryArray;
+import manager.retail.main.Config;
+import manager.retail.exception.RetailManagerException;
+import manager.retail.main.RetailMessages;
+import manager.retail.models.Shop;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+
+/**
+ * @CreatedBy Hasan on 25-Feb-2017.
+ */
+<span class="fc" id="L23">public class ShopLocatorImpl implements ShopLocator {</span>
+<span class="fc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(ShopLocatorImpl.class);</span>
+
+    @Autowired
+    private ShopInMemoryArray inMemoryArray;
+
+    @Override
+    public void save(Shop shop) {
+<span class="fc" id="L31">        validate(shop);</span>
+        // Query string for the Geo API
+<span class="fc" id="L33">        Shop.ShopAddress shop_address = shop.getShopAddress();</span>
+<span class="fc" id="L34">        StringBuilder address = new StringBuilder(shop_address.getNumber()).append(&quot;,&quot;).append(shop_address.getPostCode());</span>
+        // Get the latitude &amp; longitude
+<span class="fc" id="L36">        LatLng location = geoApiResolver(address.toString());</span>
+<span class="fc" id="L37">        shop.setShopLatitude(location.lat);</span>
+<span class="fc" id="L38">        shop.setShopLongitude(location.lng);</span>
+        // Add into in-memory data store
+<span class="fc" id="L40">        inMemoryArray.add(shop);</span>
+<span class="fc" id="L41">    }</span>
+
+    @Override
+    public Shop findNearest(LatLng location) {
+<span class="fc" id="L45">        List&lt;Shop&gt; shops = inMemoryArray.getAll();</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if(shops == null || shops.isEmpty()) {</span>
+<span class="fc" id="L47">            logger.info(RetailMessages.NO_SHOPS_ADDED);</span>
+<span class="fc" id="L48">            throw new RetailManagerException(RetailMessages.NO_SHOPS_ADDED, HttpStatus.OK);</span>
+        }
+
+<span class="fc" id="L51">        double nearest = calculateDistance(location, new LatLng(shops.get(0).getShopLatitude(),shops.get(0).getShopLongitude()));</span>
+        double temp;
+<span class="fc" id="L53">        Shop nearest_shop = shops.get(0);</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for(int i=1; i &lt; shops.size() ; i++) {</span>
+<span class="fc" id="L56">            temp = calculateDistance(location, new LatLng(shops.get(i).getShopLatitude(),shops.get(i).getShopLongitude()));</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (temp &lt; nearest) {</span>
+<span class="fc" id="L58">                nearest = temp;</span>
+<span class="fc" id="L59">                nearest_shop = shops.get(i);</span>
+            }
+        }
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if(nearest == 0.0) {</span>
+<span class="fc" id="L64">            logger.info(&quot;Found shop with an exact location match.&quot;);</span>
+        }
+<span class="fc" id="L66">        return nearest_shop;</span>
+    }
+
+    @Override
+    public List&lt;Shop&gt; getAll() {
+<span class="fc" id="L71">        return inMemoryArray.getAll();</span>
+    }
+
+    public static LatLng geoApiResolver(String address_in_one_line) {
+<span class="fc" id="L75">        GeoApiContext context = new GeoApiContext().setApiKey(Config.GEO_API_KEY);</span>
+        try {
+<span class="fc" id="L77">            GeocodingResult result = GeocodingApi.geocode(context, address_in_one_line).await()[0];</span>
+<span class="fc" id="L78">            LatLng location = result.geometry.location;</span>
+<span class="fc" id="L79">            return location;</span>
+<span class="nc" id="L80">        } catch (Exception e) {</span>
+<span class="nc" id="L81">            logger.error(&quot;Error while fetching data from google geo api.&quot;, e);</span>
+<span class="nc" id="L82">            throw new RetailManagerException(e, &quot;Error while retrieving location data for the shop. Please try again&quot;,</span>
+                    HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    private Double calculateDistance(LatLng l1, LatLng l2) {
+<span class="fc" id="L88">        double theta = l1.lng - l2.lng;</span>
+<span class="fc" id="L89">        double distance = Math.sin(deg2rad(l1.lat)) * Math.sin(deg2rad(l2.lat)) + Math.cos(deg2rad(l1.lat)) *</span>
+<span class="fc" id="L90">                Math.cos(deg2rad(l2.lat)) * Math.cos(deg2rad(theta));</span>
+<span class="fc" id="L91">        distance = Math.acos(distance);</span>
+<span class="fc" id="L92">        distance = rad2deg(distance);</span>
+<span class="fc" id="L93">        return distance * 60 * 1.1515;</span>
+    }
+    private double deg2rad(double deg) {
+<span class="fc" id="L96">        return (deg * Math.PI / 180.0);</span>
+    }
+
+    private double rad2deg(double rad) {
+<span class="fc" id="L100">        return (rad * 180 / Math.PI);</span>
+    }
+
+    private void validate(Shop shop) {
+<span class="pc bpc" id="L104" title="2 of 4 branches missed.">        if(shop == null || shop.getShopAddress() == null ||</span>
+<span class="pc bpc" id="L105" title="2 of 4 branches missed.">                shop.getShopAddress().getNumber() == null|| shop.getShopAddress().getPostCode() ==  0) {</span>
+<span class="nc" id="L106">            logger.debug(&quot;Invalid shop - &quot; + shop);</span>
+<span class="nc" id="L107">            throw new RetailManagerException(&quot;Invalid shop details. No Address found&quot;, HttpStatus.BAD_REQUEST);</span>
+        }
+<span class="fc" id="L109">    }</span>
+
+    @Override
+    public ShopInMemoryArray getInMemoryArray() {
+<span class="nc" id="L113">        return inMemoryArray;</span>
+    }
+    @Override
+    public void setInMemoryArray(ShopInMemoryArray inMemoryArray) {
+<span class="fc" id="L117">        this.inMemoryArray = inMemoryArray;</span>
+<span class="fc" id="L118">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

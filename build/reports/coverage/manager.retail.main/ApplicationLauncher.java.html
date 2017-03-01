@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationLauncher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">retail-manager</a> &gt; <a href="index.source.html" class="el_package">manager.retail.main</a> &gt; <span class="el_source">ApplicationLauncher.java</span></div><h1>ApplicationLauncher.java</h1><pre class="source lang-java linenums">package manager.retail.main;
+
+import manager.retail.service.shop.ShopLocator;
+import manager.retail.service.shop.ShopLocatorImpl;
+import manager.retail.datastore.ShopInMemoryArray;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+/**
+ * @CreatedBy Hasan on 26-Feb-2017
+ */
+@SpringBootApplication(scanBasePackages = &quot;manager.retail&quot;)
+<span class="nc" id="L15">public class ApplicationLauncher {</span>
+    public static void main(String[] args) {
+<span class="nc" id="L17">        SpringApplication.run(ApplicationLauncher.class, args);</span>
+<span class="nc" id="L18">        System.out.println(RetailMessages.SUCCESS);</span>
+<span class="nc" id="L19">    }</span>
+
+    @Bean
+    public ObjectMapper objectMapper() {
+<span class="nc" id="L23">        return new ObjectMapper();</span>
+    }
+
+    @Bean
+    public ShopInMemoryArray shopListHolder() {
+<span class="nc" id="L28">        return new ShopInMemoryArray();</span>
+    }
+
+    @Bean
+    public ShopLocator shopLocatorService() {
+<span class="nc" id="L33">        return new ShopLocatorImpl();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

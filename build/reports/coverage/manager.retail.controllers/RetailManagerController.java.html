@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RetailManagerController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">retail-manager</a> &gt; <a href="index.source.html" class="el_package">manager.retail.controllers</a> &gt; <span class="el_source">RetailManagerController.java</span></div><h1>RetailManagerController.java</h1><pre class="source lang-java linenums">package manager.retail.controllers;
+
+import com.google.maps.model.LatLng;
+import manager.retail.exception.RetailManagerException;
+import manager.retail.main.RetailMessages;
+import manager.retail.models.ServiceResponse;
+import manager.retail.models.Shop;
+import manager.retail.service.shop.ShopLocator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+/*
+RetailManager Rest Controller
+@CreatedBy Hasan on 25-Feb-2017
+*/
+
+@RestController
+@RequestMapping(&quot;/shop&quot;)
+<span class="fc" id="L28">public class RetailManagerController {</span>
+    @Autowired
+    ShopLocator shopLocator;
+    @Autowired
+    ObjectMapper objectMapper;
+<span class="fc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(RetailManagerController.class);</span>
+
+    @RequestMapping(&quot;/&quot;)
+    public String status() {
+<span class="fc" id="L37">        return RetailMessages.SUCCESS;</span>
+    }
+
+    @RequestMapping(path = &quot;/add&quot;, method = RequestMethod.POST)
+    public String addShop(HttpServletResponse response, @Validated @RequestBody Shop shop){
+        String msg;
+        try {
+<span class="fc" id="L44">            shopLocator.save(shop);</span>
+<span class="fc" id="L45">            msg = objectMapper.writeValueAsString(new ServiceResponse(true));</span>
+<span class="fc" id="L46">            response.setStatus(HttpStatus.CREATED.value());</span>
+<span class="nc" id="L47">        } catch (IOException exception) {</span>
+<span class="nc" id="L48">            logger.error(RetailMessages.SHOP_ADD_FAILED, exception);</span>
+<span class="nc" id="L49">            throw new RetailManagerException(exception, RetailMessages.NOT_PROCESSED, HttpStatus.OK);</span>
+<span class="fc" id="L50">        }</span>
+<span class="fc" id="L51">        return msg ;</span>
+    }
+
+    @RequestMapping(path = &quot;/find&quot;, method = RequestMethod.GET)
+    public String getNearestShop(@RequestParam(&quot;customerLongitude&quot;) String longitude,
+                                 @RequestParam(&quot;customerLatitude&quot;) String latitude) {
+<span class="fc" id="L57">        String result = null;</span>
+        try {
+<span class="fc" id="L59">            LatLng location = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));</span>
+<span class="nc" id="L60">            result = objectMapper.writeValueAsString(shopLocator.findNearest(location));</span>
+<span class="nc" id="L61">            return result;</span>
+<span class="fc" id="L62">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L63">            logger.error(RetailMessages.INVALID_LOCATION + &quot; - &quot;+longitude+ &quot;, &quot;+latitude, e);</span>
+<span class="fc" id="L64">            throw new RetailManagerException(e, RetailMessages.INVALID_LOCATION, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L65">        } catch (RetailManagerException rmse) {</span>
+<span class="fc" id="L66">            throw rmse;</span>
+        }
+<span class="nc" id="L68">        catch (Exception e) {</span>
+<span class="nc" id="L69">            logger.error(RetailMessages.ERROR_SHOP + latitude + &quot;, &quot; +longitude , e);</span>
+<span class="nc" id="L70">            throw new RetailManagerException(e, RetailMessages.SERVICE_UNAVAILABLE, HttpStatus.SERVICE_UNAVAILABLE);</span>
+        }
+    }
+
+    //Added this service for testing purpose
+    /*@RequestMapping(path = &quot;/all&quot;, method = RequestMethod.GET)
+    public List&lt;Shop&gt; getAllShop() {
+        String result = null;
+        try {
+            return shopLocator.getAll();
+
+        }
+        catch (Exception e) {
+            logger.error(RetailMessages.ERROR_SHOP , e);
+            throw new RetailManagerException(e, RetailMessages.SERVICE_UNAVAILABLE, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }*/
+
+    @ExceptionHandler(value = RetailManagerException.class)
+    public String handler(RetailManagerException e, HttpServletResponse response) {
+<span class="fc" id="L90">        response.setStatus(e.getHttpStatusCode().value());</span>
+<span class="fc" id="L91">        return e.getMessage();</span>
+    }
+
+    public void setShopLocator(ShopLocator shopLocator) {
+<span class="fc" id="L95">        this.shopLocator = shopLocator;</span>
+<span class="fc" id="L96">    }</span>
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+<span class="fc" id="L99">        this.objectMapper = objectMapper;</span>
+<span class="fc" id="L100">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
