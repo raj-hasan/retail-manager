@@ -47,6 +47,7 @@ gradle run
 ```````````
 
 You will see the following message after a successful start up -
+
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
