@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /*
 RetailManager Rest Controller
@@ -69,6 +70,20 @@ public class RetailManagerController {
             throw new RetailManagerException(e, RetailMessages.SERVICE_UNAVAILABLE, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    //Added this service for testing purpose
+    /*@RequestMapping(path = "/all", method = RequestMethod.GET)
+    public List<Shop> getAllShop() {
+        String result = null;
+        try {
+            return shopLocator.getAll();
+
+        }
+        catch (Exception e) {
+            logger.error(RetailMessages.ERROR_SHOP , e);
+            throw new RetailManagerException(e, RetailMessages.SERVICE_UNAVAILABLE, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }*/
 
     @ExceptionHandler(value = RetailManagerException.class)
     public String handler(RetailManagerException e, HttpServletResponse response) {

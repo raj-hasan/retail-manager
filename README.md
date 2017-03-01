@@ -28,13 +28,14 @@ gradle build -x test
 `````````````````````
 
 On successful build the jar can be found at `build/libs/` path.
+In our case, it is at local-path/retail-manager/build/libs/retail-manager-1.0.jar
 
 ## Run
 
 Once the application is built, you have the jar, it can be run with the following command -
 
 ```````````````````````````````````````````````````````````````
-java -jar path/retail-manager/build/libs/retail-manager-1.0.jar
+java -jar <path>\retail-manager\build\libs\retail-manager-1.0.jar
 ```````````````````````````````````````````````````````````````
 
 Or, simply run the main() of ApplicationLauncher.java
@@ -64,13 +65,14 @@ The application has test cases as well. To run, use the below -
 ```````````
 gradle test
 ```````````
+Test Summary can be found at src/retail-manager/build/reports/tests/test/index.html
 
 It also has  "jacoco" plugin to see the code coverage -
 ````````````````````````````
 gradle test jacocoTestReport
 ````````````````````````````
 The coverage can be veiwed at -
-src\retail-manager\build\reports\tests\test\index.html
+src/retail-manager/build/reports/coverage/index.html
 
 ## APIs -
 There are two APIs-
@@ -80,7 +82,7 @@ There are two APIs-
 
 `````````````````````````````````````
 URI            - /shop/add
-REQUEST BODY   - {"shopName" : "Hasan Test Shop","shopAddress" : {"number": "EON IT Park, Kharadi, Pune","postCode" : 411014}}
+REQUEST BODY   - {"shopName" : "Hasan Shop- Kharadi","shopAddress" : {"number": "EON IT Park, Kharadi, Pune","postCode" : 411014}}
 HTTP METHOD    - POST
 HTTP RESPONSE  - 201 OK
 RESPONSE BODY  - {"success": true}
@@ -95,8 +97,7 @@ URI            - /shop/find
 REQUEST PARAMS - customerLatitude, customerLongitude
 HTTP METHOD    - GET
 HTTP RESPONSE  - 200 OK
-RESPONSE BODY  - {"shopName" : "Test Shop","shopAddress" : {"number": "1234","postCode" : 411014}, "shopLatitude": "18.5515", "shopLongitude" : "73.9348"}
-
+RESPONSE BODY  - {"shopName":"Hasan Shop- Kharadi","shopAddress":{"number":"EON IT Park, Kharadi, Pune","postCode":411014},"shopLatitude":18.5515629,"shopLongitude":73.95096780000002}
 ```
 
 e.g - http://localhost:8080/shop/find?customerLatitude=18.5793&customerLongitude=73.9823

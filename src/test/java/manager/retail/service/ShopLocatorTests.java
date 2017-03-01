@@ -31,42 +31,45 @@ public class ShopLocatorTests extends BaseTest {
     public void testGeoApiResolver() {
         String address = "EON IT Park, Kharadi, Pune".concat(",").concat(411014 + "");
         LatLng location = ShopLocatorImpl.geoApiResolver(address);
-        assert (location.equals(locationToTest));
+        assert (isSameLocation(location,locationToTest));
     }
 
-    @Test(expected = RetailManagerException.class)
+    @Test
     public void testSave() {
-        Shop shop = buildShop("Test Shop", "EON IT Park, Kharadi, Pune",
+        Shop shop = buildShopObject("Test Shop", "EON IT Park, Kharadi, Pune",
                 411014,locationToTest.lat,locationToTest.lng);
 
         shopLocator.save(shop);
         assert (shopLocator.getAll().get(0).equals(shop));
-
     }
-
 
     @Test
     public void testNearest() {
-        Shop s1 = buildShop("Shop 1", "Number 1", 1, 1.0, 1.0);
-        Shop s2 = buildShop("Shop 2", "Number 2", 2, 2.0, 2.0);
-        Shop s3 = buildShop("Shop 2", "Number 2", 2, -2.0, -2.0);
-        Shop s4 = buildShop("Shop 2", "Number 2", 2, -2.0, 2.0);
-        Shop s5 = buildShop("Shop 2", "Number 2", 2, 2.0, -2.0);
-        shopInMemoryArray.add(s1);
-        shopInMemoryArray.add(s2);
-        shopInMemoryArray.add(s3);
-        shopInMemoryArray.add(s4);
-        shopInMemoryArray.add(s5);
+        Shop wagholi = buildShopObject("Shop  at Wagholi", "Number 1", 412207, 73.9823, 18.5793);
+        Shop yarwada = buildShopObject("Shop at Yarwada", "Number 2", 2, 73.8796, 18.5529);
+        Shop pimpri = buildShopObject("Shop at Pimpri", "Number 3", 3, 73.7997, 18.6298);
+        Shop kolkata = buildShopObject("Shop at Kolkata", "Number 4", 700001, 88.3639, 22.5726);
+        Shop bhopal = buildShopObject("Shop at Bhopal", "Number 5", 5, 77.4126, 23.2599);
+        Shop mumbai = buildShopObject("Shop at Mumbai", "Number 6", 6, 72.8777, 19.076);
+        shopInMemoryArray.add(wagholi);
+        shopInMemoryArray.add(yarwada);
+        shopInMemoryArray.add(pimpri);
+        shopInMemoryArray.add(kolkata);
+        shopInMemoryArray.add(bhopal);
+        shopInMemoryArray.add(mumbai);
 
-        assert shopLocator.findNearest(new LatLng(0.0,0.0)).equals(s1);
-
-        assert shopLocator.findNearest(new LatLng(2.0,-1.0)).equals(s1);
-
-        assert shopLocator.findNearest(new LatLng(1.0,1.0)).equals(s1);
-
+        //Latitude and Longitude of Viman Nagar is 73.9143	18.5679
+        //Nearest shop from Viman Nagar should be at Yearwada
+        assert shopLocator.findNearest(new LatLng(73.9143,18.5679)).equals(yarwada);
+        //Latitude and Longitude of Aurangabad is 75.3433	19.8762
+        //Nearest shop from Aurangabad should be at Wagholi
+        assert shopLocator.findNearest(new LatLng(75.3433,19.8762)).equals(wagholi);
+        //Latitude and Longitude of Mumbai is 72.8777	19.076
+        //Nearest shop from Mumbai should be at Munbai itself
+        assert shopLocator.findNearest(new LatLng(72.8777,19.076)).equals(mumbai);
     }
 
-    private Shop buildShop(String name, String number, int post, Double latitude, Double longitude) {
+    private Shop buildShopObject(String name, String number, int post, Double latitude, Double longitude) {
         Shop shop = new Shop();
         shop.setShopName(name);
         shop.setShopAddress(new Shop.ShopAddress(number, post));
@@ -80,5 +83,17 @@ public class ShopLocatorTests extends BaseTest {
         GeocodingResult result = GeocodingApi.geocode(context, address).await()[0];
         LatLng location = result.geometry.location;
         return location;
+    }
+
+    private boolean isSameLocation(LatLng l1, LatLng l2){
+        if(l1==null || l2==null){
+            return false;
+        }
+        if(l1.lat==l2.lat && l1.lng==l2.lng){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

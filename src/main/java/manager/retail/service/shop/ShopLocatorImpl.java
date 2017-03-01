@@ -47,16 +47,13 @@ public class ShopLocatorImpl implements ShopLocator {
             logger.info(RetailMessages.NO_SHOPS_ADDED);
             throw new RetailManagerException(RetailMessages.NO_SHOPS_ADDED, HttpStatus.OK);
         }
-        // Minimum is 0.0 since distance with itself will be 0
+
         double nearest = calculateDistance(location, new LatLng(shops.get(0).getShopLatitude(),shops.get(0).getShopLongitude()));
         double temp;
         Shop nearest_shop = shops.get(0);
 
         for(int i=1; i < shops.size() ; i++) {
             temp = calculateDistance(location, new LatLng(shops.get(i).getShopLatitude(),shops.get(i).getShopLongitude()));
-            /** If distance of shops are equal, the first one found is returned
-             *  Since '<' is used in comparison
-             */
             if (temp < nearest) {
                 nearest = temp;
                 nearest_shop = shops.get(i);
@@ -88,10 +85,19 @@ public class ShopLocatorImpl implements ShopLocator {
     }
 
     private Double calculateDistance(LatLng l1, LatLng l2) {
-        Double diff_lat = l1.lat - l2.lng;
-        Double diff_lon = l1.lat - l2.lng;
+        double theta = l1.lng - l2.lng;
+        double distance = Math.sin(deg2rad(l1.lat)) * Math.sin(deg2rad(l2.lat)) + Math.cos(deg2rad(l1.lat)) *
+                Math.cos(deg2rad(l2.lat)) * Math.cos(deg2rad(theta));
+        distance = Math.acos(distance);
+        distance = rad2deg(distance);
+        return distance * 60 * 1.1515;
+    }
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
 
-        return Math.sqrt(diff_lat * diff_lat + diff_lon * diff_lon);
+    private double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
     private void validate(Shop shop) {

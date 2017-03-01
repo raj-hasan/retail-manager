@@ -59,9 +59,10 @@ public class Shop {
         Shop shop = (Shop) o;
 
         if (!shopName.equals(shop.shopName)) return false;
-        if (shopAddress != null && !shopAddress.equals(shop.shopAddress)) return false;
-        if (shopLatitude != shop.shopLatitude) return false;
-        return shopLongitude == shop.shopLongitude;
+        if (shopAddress != null && !shopAddress.getNumber().equals(shop.shopAddress.getNumber()) &&
+                this.shopAddress.getPostCode()!=shop.shopAddress.getPostCode()) return false;
+        if (shopLatitude.doubleValue() != shop.shopLatitude.doubleValue()) return false;
+        return shopLongitude.doubleValue() == shop.shopLongitude.doubleValue();
     }
 
     @Override

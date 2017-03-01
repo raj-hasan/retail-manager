@@ -4,6 +4,7 @@ import com.google.maps.model.LatLng;
 import manager.retail.BaseTest;
 import manager.retail.datastore.ShopInMemoryArray;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,42 +18,34 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ModelTest extends BaseTest {
 
     @Test
-    public void testShopModel() throws JsonProcessingException {
+    public void testShop() throws JsonProcessingException {
         Shop shop = new Shop();
         shop.setShopName("Test Shop");
-        shop.setShopAddress(new Shop.ShopAddress("1234", 411014));
+        shop.setShopAddress(new Shop.ShopAddress("123456", 411014));
         shop.setShopLongitude(18.5793);
         shop.setShopLatitude(73.9823);
 
-        String expected = "{\"shopName\" : \"Test Shop\",\"shopAddress\" : {\"number\": \"1234\",\"postCode\" : 411014}, \"shopLatitude\": 18.5793, \"shopLongitude\" : 73.9823}";
+        String expected = "{\"shopName\":\"Test Shop\",\"shopAddress\":{\"number\":\"123456\"," +
+                "\"postCode\":411014},\"shopLatitude\":73.9823,\"shopLongitude\":18.5793}";
         String actual = objectMapper.writeValueAsString(shop);
-
+        //JSONObject actuaObject = new JSONObject(actual);
         JSONAssert.assertEquals(expected, actual, false);
 
         Shop shop2 = new Shop();
         shop2.setShopName("Test Shop");
-        shop2.setShopAddress(new Shop.ShopAddress("1234", 411014));
+        shop2.setShopAddress(new Shop.ShopAddress("123456", 411014));
         shop2.setShopLongitude(18.5793);
         shop2.setShopLatitude(73.9823);
+        boolean test = shop.equals(shop2);
+
         assert(shop.equals(shop2));
 
         shop2.setShopName("test name");
         assert(!shop.equals(shop2));
     }
 
-    /*@Test
-    public void testLocationModel() {
-        LatLng location1 = new LatLng(73.9823, 18.5793);
-        LatLng location2 = new LatLng(73.9823, 18.5793);
-        assert(location1.equals(location2));
-
-        location1 = new LatLng(0.00, 0.000);
-        location2 = new LatLng(0.0, 0.0);
-        assert(location1.equals(location2));
-    }*/
-
     @Test
-    public void testShopListHolder() {
+    public void testShopInMemoryArray() {
         ShopInMemoryArray shopInMemoryArray = new ShopInMemoryArray();
         Shop shop = new Shop();
         shop.setShopName("Test Shop");
